@@ -1,0 +1,8 @@
+server:
+  port: 9000
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://jaeryurp.duckdns.org:40171
+    username: beabus
+    password: beabus123!
