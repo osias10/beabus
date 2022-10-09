@@ -3,6 +3,12 @@ server:
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://jaeryurp.duckdns.org:40171
+    url: jdbc:mariadb://jaeryurp.duckdns.org:40171/beabus
     username: beabus
     password: beabus123!
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
