@@ -15,4 +15,17 @@ public class UserService {
         user.setRole("USER");
         userRepository.save(user);
     }
+    public User signinUser(String id, String pw) {
+        User user = userRepository.selectUserInfo(id,pw);
+        return user;
+    }
+    public int idCheck(String id) throws Exception {
+        User result = userRepository.idCheck(id);
+        if (result == null) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    }
 }

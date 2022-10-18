@@ -11,6 +11,8 @@
         <div class="form-group">
             <label for="userId">userId</label>
             <input type="text" class="form-control" id="userId" name="userId" placeholder="사용자 아이디">
+            <button id="duplicationcheck" type="button" class="btn btn-primary">중복 확인</button>
+            <span id="olmessage"></span>
         </div>
         <div class="form-group">
             <label for="userName">userName</label>
@@ -25,3 +27,28 @@
 </form>
 </body>
 </html>
+
+<script>
+    $("#duplicationcheck").click(function(){
+        //$("#signup").attr("type", "button");
+        const id = $("#userId").val();
+        $.ajax({
+            type: "get",
+            async: false,
+            url: "http://127.0.0.1:9000/idCheck",
+            data: {id: id},
+            success: function (data) {
+                if(data == 1) {
+                    $("#olmessage").text("이미 사용중인 ID 입니다.");
+                    $("#olmessage").addClass("olmessagef");
+                    $("#olmessage").removeClass("olmessaget");
+                }else {
+                    $("#olmessage").text("사용 가능한 ID 입니다.");
+                    $("#olmessage").addClass("olmessaget");
+                    $("#olmessage").removeClass("olmessagef");
+                    //$("#signup").attr("type", "submit");
+                }
+            }
+        })
+    });
+</script>
