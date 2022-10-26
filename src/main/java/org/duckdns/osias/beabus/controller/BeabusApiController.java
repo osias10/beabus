@@ -1,14 +1,11 @@
 package org.duckdns.osias.beabus.controller;
 
 import org.duckdns.osias.beabus.entity.User;
-import org.duckdns.osias.beabus.model.Result;
+import org.duckdns.osias.beabus.model.ResultJson;
 import org.duckdns.osias.beabus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/v1")
@@ -16,23 +13,39 @@ public class BeabusApiController {
 
     @Autowired
     UserService userService;
+    ResultJson resultJson;
 
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
     @ResponseBody
-    public Object signIn(User user, Model model) {
+    public Object signIn(User user) {
         System.out.println("user: " + user.getUserId() + user.getUserPassword());
         User userVO = userService.signinUser(user.getUserId(), user.getUserPassword());
-        Result result = new Result();
+
         if (userVO == null) {
-            model.addAttribute("loginMessage", "아이디 혹은 비밀번호가 일치하지 않습니다.");
-            result.message = "Unauthorized";
-            result.code = 401;
-            return result;
+            return resultJson.getResult("Unauthorized", 401);
         } else {
-            model.addAttribute("userName: ", userVO.getUserName());
-            result.message = "success";
-            result.code = 200;
-            return result;
+            return resultJson.getResult("success", 200);
+        }
+    }
+    @ResponseBody
+    @PostMapping("/signup")
+    public Object signUp(User user) {
+        boolean result = userService.joinUser(user);
+        System.out.println(result);
+        if (result == true ){
+            return resultJson.getResult("success", 200);
+        } else {
+            return resultJson.getResult("fail", 409);
+        }
+    }
+    @ResponseBody
+    @PostMapping("/idCheck")
+    public Object idCheck(User user) throws Exception{
+        int idResult = userService.idCheck(user.getUserId());
+        if (idResult == 0) {
+            return resultJson.getResult("success", 200);
+        } else {
+            return resultJson.getResult("duplicate", 400);
         }
     }
 }
