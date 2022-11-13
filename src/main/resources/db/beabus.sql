@@ -12,6 +12,15 @@ CREATE TABLE user
 
 );
 
+CREATE TABLE bus
+(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    bus_num VARCHAR(10),
+    bus_code VARCHAR(30),
+    bl_token VARCHAR(30)
+
+);
+
 CREATE DATABASE "route" CHARACTER SET utf8mb4
 USE route ;
 

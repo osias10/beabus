@@ -12,3 +12,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+#mybatis:
+#  config: mybatis-config.xml
+#  mapper-locations: mybatis/mapper/*.xml
