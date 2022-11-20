@@ -1,5 +1,8 @@
 package org.duckdns.osias.beabus.entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class Bus {
     String busNum;
     String busCode;
@@ -8,11 +11,13 @@ public class Bus {
     boolean liftFlag;
     int getOnPeople;
     int getOffPeople;
+    Calendar updatedTime;
 
     public Bus(String busNum, String busCode, int stationId) {
         this.busNum = busNum;
         this.busCode = busCode;
         this.stationId = stationId;
+        this.updatedTime = Calendar.getInstance();
     }
 
     public void getOn(boolean liftFlag) {
@@ -33,10 +38,14 @@ public class Bus {
             liftFlag = false;
         }
         this.stationId = stationId;
+        this.updatedTime = Calendar.getInstance();
     }
 
     public String getBusCode() {
         return busCode;
     }
-
+    public String getBusNum() {
+        return busNum;
+    }
+    public int getBusStation() {return stationId; }
 }
