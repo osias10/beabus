@@ -2,6 +2,7 @@ package org.duckdns.osias.beabus.entity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Bus {
     String busNum;
@@ -11,23 +12,23 @@ public class Bus {
     boolean liftFlag;
     int getOnPeople;
     int getOffPeople;
-    Calendar updatedTime;
-
+    Date updatedTime;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
     public Bus(String busNum, String busCode, int stationId) {
         this.busNum = busNum;
         this.busCode = busCode;
         this.stationId = stationId;
-        this.updatedTime = Calendar.getInstance();
+        this.updatedTime = Calendar.getInstance().getTime();
     }
 
-    public void getOn(boolean liftFlag) {
+    public void insertGetOn(boolean liftFlag) {
         this.getOnPeople += 1;
         if (liftFlag) {
             this.liftFlag = true;
         }
     }
 
-    public void getOff() {
+    public void insertGetOff() {
         this.getOffPeople += 1;
     }
 
@@ -38,7 +39,7 @@ public class Bus {
             liftFlag = false;
         }
         this.stationId = stationId;
-        this.updatedTime = Calendar.getInstance();
+        this.updatedTime = Calendar.getInstance().getTime();
     }
 
     public String getBusCode() {
@@ -48,4 +49,10 @@ public class Bus {
         return busNum;
     }
     public int getBusStation() {return stationId; }
+    public String getUpdatedTime() { return sdf.format(updatedTime); }
+    public long getUpdatedTimeLong() { return updatedTime.getTime(); }
+    public int getGetOnPeople() { return getOnPeople; }
+    public int getGetOffPeople() { return getOffPeople; }
+    public boolean getGetLift() { return liftFlag; }
+
 }

@@ -9,4 +9,5 @@ public interface BusDBRepository extends JpaRepository<BusDB,Long> {
 
     @Query(value = "SELECT * FROM beabus.bus WHERE bus_code =?1", nativeQuery = true)
     BusDB findByBusCode(String busCode);
+
 }
