@@ -51,4 +51,9 @@ public class BeabusController {
         System.out.println("result: " + result);
         return result;
     }
+
+    @GetMapping("/getbusstate")
+    public String getBusState() {
+        return "bus/getbusstate";
+    }
 }

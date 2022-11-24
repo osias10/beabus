@@ -1,10 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<div class="wrap">
+    <div class="title">
+        <h1 class="display-4">하차벨</h1>
+        <hr class="my-4">
+        <!-- -->
+        <div class="item">
 
+        </div>
+    </div>
+</div>
 </body>
 </html>
+
+<script>
+    function loadgetbusstate() {
+        $.ajax({
+            type: "GET",
+            url: "http://jaeryurp.duckdns.org:40191/api/v1/bus/getbusstate",
+            data: {busCode: "test"},
+            success: function (response) {
+                if (response['code'] == 200) {
+                    $('.item').html(`<p style="color: blue">하차벨: ${response['data']['getOff']}</p>`);
+                }
+                console.log(response);
+            }
+        })
+    };
+
+    setInterval(function(){
+        loadgetbusstate() // this will run after every 5 seconds
+    }, 5000);
+</script>

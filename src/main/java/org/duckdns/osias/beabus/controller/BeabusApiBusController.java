@@ -119,5 +119,21 @@ public class BeabusApiBusController {
         }
     }
 
-
+    @RequestMapping(value="getstationlist",method = RequestMethod.POST)
+    @ResponseBody
+    public Object getStationList(@RequestParam Map<String, String> requestData) {
+        String busNum = (String) requestData.get("busNum");
+        JSONObject result = new JSONObject();
+        result.put("busNum", busNum);
+        JSONArray jArray = new JSONArray();
+        List<Object[]> stationName = busRouteDao.getStationList(busNum);
+        for (int i =0; i<stationName.size(); i++) {
+            JSONObject obj = new JSONObject();
+            obj.put("busStationId",stationName.get(i)[0]);
+            obj.put("busStationName",stationName.get(i)[1]);
+            jArray.add(obj);
+        }
+        result.put("stationList",jArray);
+        return resultJson.getResult("success", 200,result);
+    }
 }
