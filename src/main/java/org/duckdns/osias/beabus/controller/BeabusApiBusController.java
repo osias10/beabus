@@ -108,13 +108,14 @@ public class BeabusApiBusController {
         if (busCheck == null) {
             return resultJson.getResult("no Bus", 400);
         } else {
+            List<String> stationName = busRouteDao.getStationName(busCheck.getBusNum(), busCheck.getBusStation());
             JSONObject result = new JSONObject();
             result.put("busNum",busCheck.getBusNum());
             result.put("busCode", busCheck.getBusCode());
             result.put("getOn", busCheck.getGetOnPeople());
             result.put("getOff", busCheck.getGetOffPeople());
             result.put("lift", busCheck.getGetLift());
-
+            result.put("busStationName", stationName.get(0));
             return resultJson.getResult("success", 200,result);
         }
     }
@@ -136,4 +137,45 @@ public class BeabusApiBusController {
         result.put("stationList",jArray);
         return resultJson.getResult("success", 200,result);
     }
+
+    @RequestMapping(value="getbuspnLocation",method = RequestMethod.GET)
+    @ResponseBody
+    public Object getBusPNLocation(String busCode) {
+        Bus busCheck = busList.stream().filter(b -> b.getBusCode().equals(busCode)).findAny().orElse(null);
+        if (busCheck == null) {
+            return resultJson.getResult("no Bus", 400);
+        } else {
+            List<Bus> linBustList = busList.stream().filter(b -> b.getBusNum().equals(busCheck.getBusNum()))
+                    .sorted(Comparator.comparing(Bus::getBusStation))
+                    .collect(Collectors.toList());
+            int myBus = linBustList.indexOf(busCheck);
+            //List<String> stationName = busRouteDao.getStationName(busCheck.getBusNum(), busCheck.getBusStation());
+            JSONObject result = new JSONObject();
+            JSONArray priorBusResult = new JSONArray();
+            JSONArray nextBusResult = new JSONArray();
+            JSONObject obj = new JSONObject();
+            JSONObject obj2 = new JSONObject();
+            if (myBus > 0) {
+                Bus priorBus = linBustList.get(myBus-1);
+                obj.put("busStationName", busRouteDao.getStationName(priorBus.getBusNum(), priorBus.getBusStation()).get(0));
+                obj.put("busStationDiff", busCheck.getBusStation() - priorBus.getBusStation());
+                //priorBusResult.add(obj);
+                result.put("priorBus", obj);
+            } else {
+                result.put("priorBus", "No Bus");
+            }
+            if (myBus + 1 < linBustList.size()) {
+                Bus nextBus = linBustList.get(myBus+1);
+                obj2.put("busStationName", busRouteDao.getStationName(nextBus.getBusNum(), nextBus.getBusStation()).get(0));
+                obj2.put("busStationDiff", nextBus.getBusStation() - busCheck.getBusStation());
+                //nextBusResult.add(obj2);
+                result.put("nextBus", obj2);
+            } else {
+                result.put("nextBus", "No Bus");
+            }
+
+            return resultJson.getResult("success", 200,result);
+        }
+    }
+
 }

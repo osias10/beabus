@@ -2,17 +2,37 @@
 <html lang="en">
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<style>
+    .main{
+        background-color: white;
+    }
+    .main_common{
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        border: 1px solid blue;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>BeaBus</title>
 </head>
 <body>
+<div>
+    <lable> Bus Code 입력:</lable>
+    <input type="text" id="busCode" tyle=”display:inline-block“>
+</div>
+
 <div class="wrap">
     <div class="title">
-        <h1 class="display-4">하차벨</h1>
+        <h1 class="display-4">Beabus Bus Dashboard</h1>
         <hr class="my-4">
         <!-- -->
+            <div class="priorBus main_common"></div>
+            <div class="myBus main_common"></div>
+            <div class="nextBus main_common"></div>
+
+
         <div class="item">
 
         </div>
@@ -26,10 +46,27 @@
         $.ajax({
             type: "GET",
             url: "http://jaeryurp.duckdns.org:40191/api/v1/bus/getbusstate",
-            data: {busCode: "test"},
+            data: {busCode: $("#busCode").val()},
             success: function (response) {
                 if (response['code'] == 200) {
                     $('.item').html(`<p style="color: blue">하차벨: ${response['data']['getOff']}</p>`);
+                }
+                console.log(response);
+            }
+        })
+        $.ajax({
+            type: "GET",
+            url: "http://jaeryurp.duckdns.org:40191/api/v1/bus/getbuspnLocation",
+            data: {busCode: $("#busCode").val()},
+            success: function (response) {
+                if (response['code'] == 200) {
+                    if (response['data']['priorBus'] != "No Bus") {
+                        $('.priorBus').html(`<p style="color: black"> ${response['data']['priorBus']['busStationName']}</p>`);
+                    }
+                    if (response['data']['nextBus'] != "No Bus") {
+                        $('.nextBus').html(`<p style="color: black"> ${response['data']['nextBus']['busStationName']}</p>`);
+                    }
+
                 }
                 console.log(response);
             }
