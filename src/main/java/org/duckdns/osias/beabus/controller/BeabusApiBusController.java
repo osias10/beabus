@@ -46,7 +46,12 @@ public class BeabusApiBusController {
                 busList.add(new Bus(busNum.getBusNum(), busCode, Integer.parseInt(busLocation) ));
                 return resultJson.getResult("success", 200);
             } else {
-                busCheck.insertLocation(Integer.parseInt(busLocation));
+                int nowBusLocation = Integer.parseInt(busLocation);
+                if (busCheck.getBusStation() != nowBusLocation) {
+                    busRouteDao.clearBookList(busNum.getBusNum(), nowBusLocation-1);
+                }
+                busCheck.insertLocation(nowBusLocation);
+                busCheck.setGetOn(setGetBusPeople(busNum.getBusNum(),nowBusLocation));
                 return resultJson.getResult("update", 200);
             }
         }
@@ -176,6 +181,13 @@ public class BeabusApiBusController {
 
             return resultJson.getResult("success", 200,result);
         }
-    }
 
+
+    }
+    public int setGetBusPeople(String busNum, int stationId) {
+        List<Integer> getBookList = busRouteDao.getBookList(busNum, stationId);
+        int result = getBookList.get(0);
+        System.out.println(result);
+        return result;
+    }
 }

@@ -1,8 +1,10 @@
 package org.duckdns.osias.beabus.controller;
 
 import org.duckdns.osias.beabus.entity.Bus;
+import org.duckdns.osias.beabus.entity.BusRoute;
 import org.duckdns.osias.beabus.entity.User;
 import org.duckdns.osias.beabus.model.ResultJson;
+import org.duckdns.osias.beabus.repository.BusRouteDao;
 import org.duckdns.osias.beabus.service.UserService;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.Map;
 @RequestMapping("/api/v1")
 public class BeabusApiController {
     BeabusApiBusController beabusApiBusController;
+    @Autowired
+    BusRouteDao busroutedao;
     public List<Bus> busList = beabusApiBusController.busList;
     @Autowired
     UserService userService;
@@ -92,5 +96,25 @@ public class BeabusApiController {
             busCheck.insertGetOff();
             return resultJson.getResult("success", 200);
         }
+    }
+
+    @RequestMapping(value="getonbook",method = RequestMethod.POST)
+    @ResponseBody
+    public Object getOnBook(@RequestParam Map<String, String> requestData) {
+        String busNum = (String) requestData.get("busNum");
+        int stationId = Integer.parseInt(requestData.get("stationId"));
+        String lift = (String) requestData.get("lift");
+        String log="호출: getonbook\tbusNum:%s\tstationId:%s\tlift:%s";
+        System.out.println(String.format(log,busNum,stationId,lift));
+        int liftstate = 0;
+        if (lift.equals("true")) {
+            liftstate = 1;
+        } else {
+            liftstate = 0;
+        }
+        System.out.println(busNum+stationId+lift);
+        busroutedao.addBookList(busNum, stationId, liftstate);
+        return resultJson.getResult("success", 200);
+
     }
 }

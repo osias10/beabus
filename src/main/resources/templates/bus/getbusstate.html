@@ -8,10 +8,27 @@
     }
     .main_common{
         display: inline-block;
+        width: 200px;
+        height: 250px;
+        border: 1px solid blue;
+        float: left;
+        margin: 10px;
+    }
+    .sub_common{
+        display: inline-block;
         width: 100px;
         height: 100px;
         border: 1px solid blue;
+        float: left;
+
+        margin: 10px;
     }
+    .sub_p{
+
+
+        margin: 0 auto;
+    }
+
 </style>
 <head>
     <meta charset="UTF-8">
@@ -28,9 +45,21 @@
         <h1 class="display-4">Beabus Bus Dashboard</h1>
         <hr class="my-4">
         <!-- -->
-            <div class="priorBus main_common"></div>
-            <div class="myBus main_common"></div>
-            <div class="nextBus main_common"></div>
+            <div class="priorBus sub_common">
+                <p class="sub_p">이전 버스</p>
+                <p class="sub_p" id="priorBusStationName"></p>
+            </div>
+            <div class="myBus main_common" id="myBusDiv"> Bus State
+                <p class="sub_p" id="mysBusNum"></p>
+                <p class="sub_p" id="mysBusStationName"></p>
+                <p class="sub_p" id="getOn"></p>
+                <p class="sub_p" id="getOff"></p>
+                <p class="sub_p" id="lift"></p>
+            </div>
+            <div class="nextBus sub_common">
+                <p class="sub_p">다음 버스</p>
+                <p class="sub_p" id="nextBusStationName"></p>
+            </div>
 
 
         <div class="item">
@@ -49,7 +78,18 @@
             data: {busCode: $("#busCode").val()},
             success: function (response) {
                 if (response['code'] == 200) {
-                    $('.item').html(`<p style="color: blue">하차벨: ${response['data']['getOff']}</p>`);
+                    $('#mysBusNum').html(`버스 번호: ${response['data']['busNum']}`);
+                    $('#mysBusStationName').html(`현재 정류장:<br>${response['data']['busStationName']}`);
+                    $('#getOn').html(`<p style="color: blue">승차 예약: ${response['data']['getOn']}</p>`);
+                    $('#getOff').html(`<p style="color: blue">하차 예약: ${response['data']['getOff']}</p>`);
+                    if ( response['data']['lift'] == "true" ) {
+                        $('#lift').html(`<p style="color: blue">휠체어 리프트 사용: O</p>`);
+                    } else {
+                        $('#lift').html(`<p style="color: blue">휠체어 리프트 사용: X</p>`);
+                    }
+
+
+
                 }
                 console.log(response);
             }
@@ -60,11 +100,15 @@
             data: {busCode: $("#busCode").val()},
             success: function (response) {
                 if (response['code'] == 200) {
-                    if (response['data']['priorBus'] != "No Bus") {
-                        $('.priorBus').html(`<p style="color: black"> ${response['data']['priorBus']['busStationName']}</p>`);
+                    if ((response['data']['priorBus'] != "No Bus")) {
+                        $('#priorBusStationName').html(`<p style="color: black"> ${response['data']['priorBus']['busStationName']}</p>`);
+                    } else {
+                        $('#priorBusStationName').html(`<p style="color: black"> 없음</p>`);
                     }
-                    if (response['data']['nextBus'] != "No Bus") {
-                        $('.nextBus').html(`<p style="color: black"> ${response['data']['nextBus']['busStationName']}</p>`);
+                    if ((response['data']['nextBus'] != "No Bus" )) {
+                        $('#nextBusStationName').html(`<p style="color: black"> ${response['data']['nextBus']['busStationName']}</p>`);
+                    } else {
+                        $('#nextBusStationName').html(`<p style="color: black"> 없음</p>`);
                     }
 
                 }
@@ -72,8 +116,18 @@
             }
         })
     };
+    function goNext() {
+        $.ajax({
+            type: "POST",
+            url: "http://jaeryurp.duckdns.org:40191/api/v1/bus/setbuslocation",
+            data: {busCode: $("#busCode").val()},
+            success: function (response) {
 
+                console.log(response);
+            }
+        })
+    }
     setInterval(function(){
         loadgetbusstate() // this will run after every 5 seconds
-    }, 5000);
+    }, 1000);
 </script>

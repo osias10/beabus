@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Bus {
     String busNum;
@@ -32,6 +33,9 @@ public class Bus {
             this.liftFlag = true;
         }
     }
+    public void setGetOn(int people) {
+        this.getOnPeople = people;
+    }
 
     public void insertGetOff() {
         this.getOffPeople += 1;
@@ -39,10 +43,12 @@ public class Bus {
 
     public void insertLocation(int stationId) {
         if (this.stationId != stationId) {
+            //busRouteDao.clearBookList(busNum, stationId);
             getOnPeople = 0;
             getOffPeople = 0;
             liftFlag = false;
         }
+
         this.stationId = stationId;
         this.updatedTime = Calendar.getInstance().getTime();
     }
@@ -56,7 +62,10 @@ public class Bus {
     public int getBusStation() {return stationId; }
     public String getUpdatedTime() { return sdf.format(updatedTime); }
     public long getUpdatedTimeLong() { return updatedTime.getTime(); }
-    public int getGetOnPeople() { return getOnPeople; }
+    public int getGetOnPeople() {
+
+        return getOnPeople;
+    }
     public int getGetOffPeople() { return getOffPeople; }
     public boolean getGetLift() { return liftFlag; }
     public String getBusStationName() { return busRouteDao.getStationName(busNum, stationId).get(0); }
